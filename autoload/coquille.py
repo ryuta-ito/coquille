@@ -141,7 +141,7 @@ def coq_raw_query(*args):
 
     raw_query = ' '.join(args)
 
-    encoding = vim.eval("&encoding")
+    encoding = vim.eval("&encoding") or 'utf-8'
 
     response = CT.query(raw_query, encoding)
 

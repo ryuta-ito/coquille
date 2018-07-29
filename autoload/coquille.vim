@@ -5,10 +5,22 @@ if !exists('coquille_auto_move')
     let g:coquille_auto_move="false"
 endif
 
+try
+    py import sys, vim
+catch /E319:/
+    if !exists('s:warned')
+        echo "vim doesn't support python. Turn off coquille"
+        let s:warned = 1
+    endif
+    function! coquille#Register()
+    endfunction
+    finish
+endtry
+
+
 " Load vimbufsync if not already done
 call vimbufsync#init()
 
-py import sys, vim
 py if not vim.eval("s:current_dir") in sys.path:
 \    sys.path.append(vim.eval("s:current_dir")) 
 py import coquille
@@ -18,10 +30,12 @@ function! coquille#ShowPanels()
     let l:winnb = winnr()
     rightbelow vnew Goals
         setlocal buftype=nofile
+        setlocal filetype=coq-goals
         setlocal noswapfile
         let s:goal_buf = bufnr("%")
     rightbelow new Infos
         setlocal buftype=nofile
+        setlocal filetype=coq-infos
         setlocal noswapfile
         let s:info_buf = bufnr("%")
     execute l:winnb . 'winc w'
@@ -48,9 +62,9 @@ function! coquille#FNMapping()
     map <buffer> <silent> <F3> :CoqNext<CR>
     map <buffer> <silent> <F4> :CoqToCursor<CR>
 
-    imap <buffer> <silent> <F2> <ESC>:CoqUndo<CR>a
-    imap <buffer> <silent> <F3> <ESC>:CoqNext<CR>a
-    imap <buffer> <silent> <F4> <ESC>:CoqToCursor<CR>a
+    imap <buffer> <silent> <F2> <C-\><C-o>:CoqUndo<CR>
+    imap <buffer> <silent> <F3> <C-\><C-o>:CoqNext<CR>
+    imap <buffer> <silent> <F4> <C-\><C-o>:CoqToCursor<CR>
 endfunction
 
 function! coquille#CoqideMapping()
@@ -62,10 +76,10 @@ function! coquille#CoqideMapping()
     map <buffer> <silent> <C-A-Down>  :CoqNext<CR>
     map <buffer> <silent> <C-A-Right> :CoqToCursor<CR>
 
-    imap <buffer> <silent> <C-A-Up>    <ESC>:CoqUndo<CR>a
-    imap <buffer> <silent> <C-A-Left>  <ESC>:CoqToCursor<CR>a
-    imap <buffer> <silent> <C-A-Down>  <ESC>:CoqNext<CR>a
-    imap <buffer> <silent> <C-A-Right> <ESC>:CoqToCursor<CR>a
+    imap <buffer> <silent> <C-A-Up>    <C-\><C-o>:CoqUndo<CR>
+    imap <buffer> <silent> <C-A-Left>  <C-\><C-o>:CoqToCursor<CR>
+    imap <buffer> <silent> <C-A-Down>  <C-\><C-o>:CoqNext<CR>
+    imap <buffer> <silent> <C-A-Right> <C-\><C-o>:CoqToCursor<CR>
 endfunction
 
 function! coquille#Launch(...)
@@ -100,8 +114,8 @@ function! coquille#Launch(...)
 endfunction
 
 function! coquille#Register()
-    hi CheckedByCoq ctermbg=17 guibg=LightGreen
-    hi SentToCoq ctermbg=60 guibg=LimeGreen
+    hi default CheckedByCoq ctermbg=17 guibg=LightGreen
+    hi default SentToCoq ctermbg=60 guibg=LimeGreen
     hi link CoqError Error
 
     let b:checked = -1
