@@ -230,7 +230,7 @@ syn keyword coqTactic    contained eapply eassumption econstructor elim[type] eq
 syn keyword coqTactic    contained fix f_equal fold functional generalize hnf
 syn keyword coqTactic    contained idtac induction injection instantiate intro[s] intuition inversion[_clear]
 syn keyword coqTactic    contained lapply left move omega pattern pose proof quote
-syn keyword coqTactic    contained red refine reflexivity rename replace revert rewrite right ring
+syn keyword coqTactic    contained red refine reflexivity rename replace revert rewrite at right ring specialize remember
 syn keyword coqTactic    contained set simpl[e] simplify_eq split subst stepl stepr symmetry
 syn keyword coqTactic    contained transitivity trivial unfold vm_compute
 syn keyword coqTacticKwd contained as by in using with into after until return
